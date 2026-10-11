@@ -91,3 +91,48 @@ test('隐私版本在提交前更新时，拒绝继续登录', async () => {
   assert.match(page.data.error, /隐私说明已更新/)
   assert.equal(app.globalData.session, null)
 })
+
+test('退出请求失败仍立即清除本机会话', async () => {
+  const app = { globalData: { session: { token: 'temporary' } }, clearSession() { this.globalData.session = null } }
+  global.getApp = () => app
+  global.wx = { request(options) {
+    assert.equal(options.header.Authorization, 'Bearer temporary')
+    options.fail()
+  } }
+  global.Page = definition => { global.pageDefinition = definition }
+  require('../miniprogram/pages/mine/index')
+  const page = { ...global.pageDefinition, data: { ...global.pageDefinition.data }, setData(value) { Object.assign(this.data, value) } }
+  page.onShow()
+  const task = page.logout()
+  assert.equal(app.globalData.session, null)
+  assert.equal(page.data.session, null)
+  await task
+  assert.match(page.data.error, /本机退出/)
+})
+
+test('旧内容请求不能覆盖较新的刷新结果', async () => {
+  const pending = []
+  const app = { globalData: { publicContent: null } }
+  global.getApp = () => app
+  global.wx = { request(options) { pending.push(options) } }
+  global.Page = definition => { global.pageDefinition = definition }
+  require('../miniprogram/pages/home/index')
+  const page = { ...global.pageDefinition, data: { ...global.pageDefinition.data }, setData(value) { Object.assign(this.data, value) } }
+  const older = page.loadContent()
+  const newer = page.loadContent()
+  pending[1].success({ statusCode: 200, data: { version: 2, texts: { notice: { title: '新版', body: '新内容' } } } })
+  await newer
+  pending[0].success({ statusCode: 200, data: { version: 1, texts: { notice: { title: '旧版', body: '旧内容' } } } })
+  await older
+  assert.equal(page.data.content.version, 2)
+  assert.equal(app.globalData.publicContent.version, 2)
+
+  const staleFailure = page.loadContent()
+  const latest = page.loadContent()
+  pending[3].success({ statusCode: 200, data: { version: 3, texts: { notice: { title: '最新版', body: '最新内容' } } } })
+  await latest
+  pending[2].fail()
+  await staleFailure
+  assert.equal(page.data.content.version, 3)
+  assert.equal(app.globalData.publicContent.version, 3)
+})
