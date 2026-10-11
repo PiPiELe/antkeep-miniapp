@@ -1,0 +1,9 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty">正在读取内容…</view>
+  <view wx:elif="{{error}}" class="empty"><view>{{error}}</view><button class="button-plain retry" bindtap="loadArticle">重新加载</button></view>
+  <view wx:else>
+    <view class="pill">{{article.kind}}</view>
+    <view class="heading article-heading">{{article.title}}</view>
+    <view class="card article-body"><view class="body-text">{{article.body}}</view></view>
+  </view>
+</view>

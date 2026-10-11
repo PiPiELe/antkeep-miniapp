@@ -1,0 +1,4 @@
+{
+  "desc": "页面不参与微信搜索",
+  "rules": [{ "action": "disallow", "page": "*" }]
+}

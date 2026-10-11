@@ -1,0 +1,23 @@
+const { request } = require('../../services/api')
+const { normalizeContent } = require('../../services/content')
+
+Page({
+  data: { loading: true, error: '', empty: false, content: null },
+  onLoad() { this.loadContent() },
+  onPullDownRefresh() { this.loadContent().finally(() => wx.stopPullDownRefresh()) },
+  loadContent() {
+    this.setData({ loading: true, error: '' })
+    return request('/api/public/content').then(payload => {
+      const content = normalizeContent(payload)
+      getApp().globalData.publicContent = content
+      this.setData({ content, empty: !content.articles.length && !content.steps.length, loading: false })
+    }).catch(error => {
+      getApp().globalData.publicContent = null
+      this.setData({ content: null, empty: error.code === 'CONTENT_NOT_PUBLISHED', error: error.code === 'CONTENT_NOT_PUBLISHED' ? '' : error.message, loading: false })
+    })
+  },
+  openArticle(event) {
+    const { kind, id } = event.currentTarget.dataset
+    wx.navigateTo({ url: `/pages/article/index?kind=${encodeURIComponent(kind)}&id=${encodeURIComponent(id)}` })
+  }
+})

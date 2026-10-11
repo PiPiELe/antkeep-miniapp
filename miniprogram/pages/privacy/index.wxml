@@ -1,0 +1,12 @@
+<view class="page">
+  <view wx:if="{{loading}}" class="empty">正在读取隐私说明…</view>
+  <view wx:elif="{{error}}" class="empty"><view>{{error}}</view><button class="button-plain retry" bindtap="loadAgreement">重新加载</button></view>
+  <view wx:else>
+    <view class="eyebrow">PRIVACY · 第 {{agreement.version}} 版</view>
+    <view class="heading">{{agreement.title}}</view>
+    <view class="lead">生效日期：{{agreement.effectiveDate}}</view>
+    <view class="card agreement"><view class="body-text">{{agreement.content}}</view></view>
+    <view class="muted meta">开发者：{{agreement.developerName}}</view>
+    <view class="muted meta contact">联系：{{agreement.contact}}</view>
+  </view>
+</view>

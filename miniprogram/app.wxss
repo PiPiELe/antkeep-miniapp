@@ -1,0 +1,23 @@
+page { background: #f7f5ed; color: #20362a; font-size: 30rpx; }
+view, text, button, input { box-sizing: border-box; }
+.page { min-height: 100vh; padding: 36rpx 32rpx 80rpx; }
+.eyebrow { color: #698577; font-size: 22rpx; font-weight: 700; letter-spacing: 3rpx; }
+.heading { font-size: 52rpx; font-weight: 750; line-height: 1.25; margin-top: 14rpx; }
+.lead { color: #627269; line-height: 1.7; margin-top: 16rpx; font-size: 27rpx; }
+.section-title { font-size: 34rpx; font-weight: 700; margin: 48rpx 0 24rpx; }
+.card { background: #fff; border-radius: 28rpx; padding: 32rpx; box-shadow: 0 8rpx 30rpx rgba(36, 65, 49, .045); margin-bottom: 20rpx; }
+.card-title { font-size: 32rpx; font-weight: 700; line-height: 1.4; }
+.muted { color: #718078; font-size: 25rpx; line-height: 1.6; }
+.body-text { white-space: pre-wrap; line-height: 1.8; overflow-wrap: break-word; }
+.pill { display: inline-block; background: #e9f4ed; color: #23634b; border-radius: 50rpx; padding: 8rpx 18rpx; font-size: 22rpx; font-weight: 700; }
+.button-primary { background: #23634b; color: #fff; border-radius: 18rpx; font-size: 29rpx; font-weight: 700; margin: 0; }
+.button-primary[disabled] { background: #a7b4aa; color: #fff; }
+.button-secondary { background: #e9f0e9; color: #23634b; border-radius: 18rpx; font-size: 28rpx; margin: 0; }
+.button-plain { color: #23634b; background: transparent; font-size: 27rpx; margin: 0; padding: 0; text-align: left; }
+.button-plain::after { border: 0; }
+.empty { background: #fff; border-radius: 28rpx; padding: 46rpx 32rpx; color: #65766b; line-height: 1.65; }
+.error { color: #a13f36; background: #fff1ed; padding: 20rpx 24rpx; border-radius: 16rpx; font-size: 25rpx; line-height: 1.5; margin: 20rpx 0; }
+.field-label { display: block; color: #4d6555; font-size: 25rpx; margin: 26rpx 0 12rpx; }
+.field { background: #fff; border: 2rpx solid #e2e9e1; border-radius: 16rpx; height: 94rpx; padding: 0 24rpx; font-size: 29rpx; }
+.link-row { display: flex; justify-content: space-between; align-items: center; gap: 18rpx; }
+.chevron { color: #9bab9f; font-size: 34rpx; }

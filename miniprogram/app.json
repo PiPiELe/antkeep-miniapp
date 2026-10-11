@@ -1,0 +1,30 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/checkin/index",
+    "pages/mine/index",
+    "pages/auth/index",
+    "pages/privacy/index",
+    "pages/article/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "蚁记",
+    "navigationBarBackgroundColor": "#f7f5ed",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7f5ed",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#7c887e",
+    "selectedColor": "#23634b",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/home/index", "text": "发现" },
+      { "pagePath": "pages/checkin/index", "text": "签到" },
+      { "pagePath": "pages/mine/index", "text": "我的" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

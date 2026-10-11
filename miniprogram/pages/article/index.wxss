@@ -1,0 +1,3 @@
+.article-heading { margin: 28rpx 0 34rpx; }
+.article-body { padding: 38rpx 32rpx; }
+.retry { margin-top: 16rpx; }

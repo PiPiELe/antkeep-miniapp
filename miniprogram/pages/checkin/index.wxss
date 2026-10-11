@@ -1,0 +1,13 @@
+.guest-card, .check-card { background: #fff; border-radius: 32rpx; margin-top: 50rpx; padding: 52rpx 36rpx; text-align: center; }
+.second-line { margin-top: 0; }
+.guest-symbol, .check-symbol { margin: 0 auto 30rpx; width: 110rpx; height: 110rpx; line-height: 110rpx; border-radius: 50%; color: #23634b; background: #eaf3e8; font-size: 62rpx; }
+.guest-hint { margin-top: 14rpx; }
+.guest-action, .check-action { margin-top: 44rpx; }
+.date-pill { background: #e9f4ed; color: #23634b; border-radius: 50rpx; padding: 11rpx 23rpx; font-size: 24rpx; display: inline-block; margin-top: 48rpx; }
+.check-card { margin-top: 24rpx; }
+.check-title { font-size: 38rpx; font-weight: 700; }
+.check-subtitle { color: #718078; font-size: 25rpx; margin-top: 16rpx; }
+.stats { display: flex; gap: 20rpx; margin-top: 24rpx; }
+.stat { background: #fff; flex: 1; border-radius: 24rpx; text-align: center; padding: 34rpx 12rpx; }
+.stat-value { color: #23634b; font-size: 48rpx; font-weight: 700; margin-bottom: 6rpx; }
+.retry { margin-top: 14rpx; }

@@ -1,0 +1,35 @@
+<view class="page">
+  <view class="eyebrow">ANTKEEP · 蚁记</view>
+  <view class="heading">从一只蚁后，</view>
+  <view class="heading second-line">认识一个世界。</view>
+  <view class="lead">看看最新公告与公开养护资料。你的养殖记录仍保存在 App 本机。</view>
+  <view class="hero-card">
+    <view class="hero-icon">蚁</view>
+    <view class="hero-copy">每日一点观察，</view>
+    <view class="hero-copy next-line">慢慢看见成长。</view>
+    <view class="hero-orbit"></view>
+  </view>
+
+  <view wx:if="{{loading}}" class="empty">正在读取已发布内容…</view>
+  <view wx:elif="{{error}}" class="empty">
+    <view>{{error}}</view>
+    <button class="button-plain retry" bindtap="loadContent">重新加载</button>
+  </view>
+  <view wx:elif="{{empty}}" class="empty">暂无已发布内容，请稍后再来看看。</view>
+  <block wx:else>
+    <view wx:if="{{content.articles.length}}" class="section-title">最新内容</view>
+    <view wx:for="{{content.articles}}" wx:key="id" class="card article-card" data-kind="article" data-id="{{item.id}}" bindtap="openArticle">
+      <view class="link-row"><text class="pill">{{item.kind}}</text><text class="chevron">›</text></view>
+      <view class="card-title article-title">{{item.title}}</view>
+      <view class="muted preview">{{item.body}}</view>
+    </view>
+    <view wx:if="{{content.steps.length}}" class="section-title">{{content.onboardingTitle || '入门资料'}}</view>
+    <view wx:if="{{content.onboardingSummary}}" class="lead summary">{{content.onboardingSummary}}</view>
+    <view wx:for="{{content.steps}}" wx:key="id" class="card step-card" data-kind="step" data-id="{{item.id}}" bindtap="openArticle">
+      <view class="step-number">{{index + 1}}</view>
+      <view class="step-copy"><view class="card-title">{{item.title}}</view><view class="muted preview">{{item.body}}</view></view>
+      <text class="chevron">›</text>
+    </view>
+    <view class="content-footer">已发布内容 · 第 {{content.version}} 版</view>
+  </block>
+</view>

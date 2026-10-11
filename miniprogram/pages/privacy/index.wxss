@@ -1,0 +1,4 @@
+.agreement { margin-top: 40rpx; }
+.meta { margin: 24rpx 8rpx; }
+.contact { margin-top: -12rpx; }
+.retry { margin-top: 16rpx; }

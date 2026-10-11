@@ -1,0 +1,27 @@
+<view class="page">
+  <view class="eyebrow">YOUR SPACE</view>
+  <view class="heading">我的蚁记</view>
+  <view class="lead">一个账号，连接你在蚁记的在线体验。</view>
+
+  <view class="profile-card">
+    <view class="avatar">蚁</view>
+    <view class="profile-copy">
+      <view class="card-title">{{session ? session.user.username : '访客'}}</view>
+      <view class="muted">{{session ? '已登录蚁记账号' : '登录后可使用每日签到'}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!session}}" class="card">
+    <view class="card-title">继续你的在线旅程</view>
+    <view class="muted prompt">使用现有蚁记账号，或注册一个新账号。</view>
+    <button class="button-primary login-action" bindtap="goLogin">登录或注册</button>
+  </view>
+
+  <view class="section-title">关于与设置</view>
+  <view class="card link-row" bindtap="goPrivacy">
+    <view><view class="card-title">隐私说明</view><view class="muted">阅读当前已发布版本</view></view><text class="chevron">›</text>
+  </view>
+  <view class="scope-note">本小程序只提供账号、签到与公开内容。App 中的蚁群、日记、照片和备份留在 App 本机，不会出现在这里。</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <button wx:if="{{session}}" class="button-plain logout" disabled="{{loggingOut}}" bindtap="logout">{{loggingOut ? '正在退出…' : '退出登录'}}</button>
+</view>

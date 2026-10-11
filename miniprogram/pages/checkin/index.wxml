@@ -1,0 +1,32 @@
+<view class="page">
+  <view class="eyebrow">DAILY CHECK-IN</view>
+  <view class="heading">和蚁记，</view>
+  <view class="heading second-line">每天见一面。</view>
+  <view class="lead">签到日期以服务端北京时间为准。登录同一账号后，App 和小程序共享签到状态。</view>
+
+  <view wx:if="{{!signedIn}}" class="guest-card">
+    <view class="guest-symbol">✦</view>
+    <view class="card-title">登录后开始签到</view>
+    <view class="muted guest-hint">沿用蚁记现有账号，无需创建新身份。</view>
+    <button class="button-primary guest-action" bindtap="goLogin">登录或注册</button>
+  </view>
+  <block wx:else>
+    <view class="date-pill">{{summary ? summary.date : '读取中'}} · 北京时间</view>
+    <view wx:if="{{error}}" class="error">{{error}}</view>
+    <view wx:if="{{loading}}" class="empty">正在读取签到状态…</view>
+    <view wx:elif="{{summary}}" class="check-card">
+      <view class="check-symbol">{{summary.checkedInToday ? '✓' : '✦'}}</view>
+      <view class="check-title">{{summary.checkedInToday ? '今天已签到' : '今天还没有签到'}}</view>
+      <view class="check-subtitle">{{summary.checkedInToday ? '明天再来，继续记录这段旅程。' : '轻轻一点，为今天留个记号。'}}</view>
+      <button class="button-primary check-action" disabled="{{summary.checkedInToday || submitting}}" loading="{{submitting}}" bindtap="checkIn">{{summary.checkedInToday ? '今日已完成' : '立即签到'}}</button>
+    </view>
+    <view wx:if="{{!loading &amp;&amp; !summary &amp;&amp; signedIn}}" class="empty">
+      <view>暂时无法获取签到状态。</view>
+      <button class="button-plain retry" bindtap="loadSummary">重新加载</button>
+    </view>
+    <view wx:if="{{summary}}" class="stats">
+      <view class="stat"><view class="stat-value">{{summary.consecutiveDays}}</view><view class="muted">连续天数</view></view>
+      <view class="stat"><view class="stat-value">{{summary.totalDays}}</view><view class="muted">累计天数</view></view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,7 @@
+.profile-card { display: flex; align-items: center; gap: 25rpx; background: #e7eee4; padding: 34rpx; border-radius: 28rpx; margin: 46rpx 0 24rpx; }
+.avatar { width: 94rpx; height: 94rpx; line-height: 94rpx; text-align: center; color: #fff; background: #23634b; border-radius: 28rpx; font-size: 44rpx; font-weight: 700; flex: none; }
+.profile-copy { min-width: 0; overflow-wrap: break-word; }
+.prompt { margin: 12rpx 0 25rpx; }
+.login-action { margin-top: 18rpx; }
+.scope-note { color: #7c8c80; font-size: 24rpx; line-height: 1.7; margin: 25rpx 5rpx; }
+.logout { margin: 45rpx auto; text-align: center; color: #a13f36; }

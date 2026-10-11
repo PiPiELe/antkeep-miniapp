@@ -1,0 +1,30 @@
+<view class="page">
+  <view class="eyebrow">ANTKEEP ACCOUNT</view>
+  <view class="heading">欢迎来到蚁记</view>
+  <view class="lead">使用原有账号登录，签到状态与 App 共用。</view>
+
+  <view class="mode-switch">
+    <view class="mode {{mode === 'login' ? 'selected' : ''}}" bindtap="chooseLogin">登录</view>
+    <view class="mode {{mode === 'register' ? 'selected' : ''}}" bindtap="chooseRegister">注册</view>
+  </view>
+  <view class="field-label">用户名</view>
+  <input class="field" value="{{username}}" maxlength="32" placeholder="3–32 位字母、数字或下划线" bindinput="usernameInput" />
+  <view class="field-label">密码</view>
+  <input class="field" value="{{password}}" password="true" maxlength="64" placeholder="至少 8 个字符" bindinput="passwordInput" />
+  <block wx:if="{{mode === 'register'}}">
+    <view class="field-label">邀请码{{inviteRequired ? '（必填）' : '（选填）'}}</view>
+    <input class="field" value="{{inviteCode}}" maxlength="64" placeholder="有邀请码可在这里填写" bindinput="inviteInput" />
+    <view wx:if="{{policyError}}" class="error">注册规则读取失败：{{policyError}}</view>
+  </block>
+
+  <view class="consent-row">
+    <view class="checkbox {{accepted ? 'checked' : ''}}" bindtap="toggleAccepted">{{accepted ? '✓' : ''}}</view>
+    <view class="consent-copy" bindtap="toggleAccepted">我已阅读并同意</view>
+    <button class="button-plain privacy-link" bindtap="goPrivacy">{{privacy ? '《' + privacy.title + '》' : '隐私说明'}}</button>
+  </view>
+  <view wx:if="{{privacyError}}" class="error">{{privacyError}}</view>
+  <view wx:if="{{error}}" class="error">{{error}}</view>
+  <button wx:if="{{privacyError || policyError}}" class="button-plain retry" bindtap="loadPolicies">重新读取协议与规则</button>
+  <button class="button-primary submit" loading="{{submitting}}" disabled="{{submitting || loading || !privacy || (mode === 'register' &amp;&amp; !policyReady)}}" bindtap="submit">{{mode === 'register' ? '注册并登录' : '登录'}}</button>
+  <view class="footnote">登录令牌仅在本次小程序运行期间使用，关闭后需重新登录。</view>
+</view>

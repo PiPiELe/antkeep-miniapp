@@ -1,0 +1,10 @@
+.mode-switch { display: flex; background: #e8eee7; border-radius: 18rpx; padding: 8rpx; margin-top: 42rpx; }
+.mode { flex: 1; text-align: center; padding: 19rpx; color: #6c7d70; font-size: 28rpx; }
+.mode.selected { background: #fff; color: #23634b; font-weight: 700; border-radius: 13rpx; }
+.consent-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8rpx; margin: 40rpx 0 20rpx; font-size: 25rpx; color: #586d5d; }
+.checkbox { width: 36rpx; height: 36rpx; border: 2rpx solid #8ea492; background: #fff; border-radius: 8rpx; text-align: center; line-height: 32rpx; margin-right: 9rpx; flex: none; }
+.checkbox.checked { background: #23634b; color: #fff; border-color: #23634b; }
+.privacy-link { display: inline; font-size: 25rpx; line-height: 1.5; }
+.submit { margin-top: 32rpx; }
+.retry { margin: 20rpx 0; }
+.footnote { color: #849486; font-size: 23rpx; line-height: 1.6; text-align: center; margin-top: 30rpx; }
