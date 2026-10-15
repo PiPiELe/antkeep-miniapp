@@ -8,7 +8,7 @@
     <view class="mode {{mode === 'register' ? 'selected' : ''}}" bindtap="chooseRegister">注册</view>
   </view>
   <view class="field-label">用户名</view>
-  <input class="field" value="{{username}}" maxlength="32" placeholder="3–32 位字母、数字或下划线" bindinput="usernameInput" />
+  <input class="field" value="{{username}}" maxlength="32" placeholder="3–32 位汉字、字母、数字或下划线" bindinput="usernameInput" />
   <view class="field-label">密码</view>
   <input class="field" value="{{password}}" password="true" maxlength="64" placeholder="至少 8 个字符" bindinput="passwordInput" />
   <block wx:if="{{mode === 'register'}}">

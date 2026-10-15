@@ -1,6 +1,6 @@
 const { request } = require('../../services/api')
 
-const USERNAME = /^[a-z0-9_]{3,32}$/
+const USERNAME = /^[a-z0-9_\u3400-\u4DBF\u4E00-\u9FFF]{3,32}$/
 
 Page({
   data: {
@@ -31,7 +31,7 @@ Page({
     const { mode, password, accepted, privacy, inviteRequired, policyReady } = this.data
     const username = this.data.username.trim().toLowerCase()
     const inviteCode = this.data.inviteCode.trim()
-    if (!USERNAME.test(username)) return this.setData({ error: '用户名须为 3–32 位小写字母、数字或下划线。' })
+    if (!USERNAME.test(username)) return this.setData({ error: '用户名须为 3–32 位汉字、字母、数字或下划线。' })
     if (Array.from(password).length < 8 || Array.from(password).length > 64) return this.setData({ error: '密码须为 8–64 个字符。' })
     if (!privacy || !accepted) return this.setData({ error: '请先阅读并同意当前隐私说明。' })
     if (mode === 'register' && (!policyReady || (inviteRequired && !inviteCode))) return this.setData({ error: policyReady ? '请输入邀请码。' : '注册规则尚未加载，请重试。' })

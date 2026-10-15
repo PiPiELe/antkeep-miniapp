@@ -46,9 +46,9 @@ test('注册前核对隐私版本，成功后只把令牌留在运行内存', as
         : path.endsWith('/registration-policy')
           ? { inviteCodeRequired: true }
           : path.endsWith('/auth/register')
-            ? { id: 'user-1', username: 'ant_user' }
-            : { token: 'memory-only', user: { id: 'user-1', username: 'ant_user' } }
-      if (path.endsWith('/auth/register')) assert.deepEqual(options.data, { username: 'ant_user', password: 'password123', inviteCode: 'INVITE' })
+            ? { id: 'user-1', username: '蚂蚁_ant' }
+            : { token: 'memory-only', user: { id: 'user-1', username: '蚂蚁_ant' } }
+      if (path.endsWith('/auth/register')) assert.deepEqual(options.data, { username: '蚂蚁_ant', password: 'password123', inviteCode: 'INVITE' })
       options.success({ statusCode: path.endsWith('/auth/register') ? 201 : 200, data })
     },
     setStorageSync(key, value) { assert.equal(key, 'privacyConsent'); stored = value },
@@ -59,10 +59,14 @@ test('注册前核对隐私版本，成功后只把令牌留在运行内存', as
   require('../miniprogram/pages/auth/index')
   const page = { ...global.pageDefinition, data: { ...global.pageDefinition.data }, setData(value) { Object.assign(this.data, value) } }
   await page.loadPolicies()
-  page.setData({ mode: 'register', username: 'Ant_User', password: 'password123', inviteCode: 'INVITE', accepted: true })
+  page.setData({ mode: 'register', username: '蚁友', password: 'password123', inviteCode: 'INVITE', accepted: true })
+  await page.submit()
+  assert.match(page.data.error, /3–32 位/)
+  assert.equal(paths.length, 2)
+  page.setData({ username: '蚂蚁_Ant' })
   await page.submit()
   assert.equal(app.globalData.session.token, 'memory-only')
-  assert.deepEqual(stored, { publicationId: 'agreement-1', version: 2, username: 'ant_user', acceptedAt: stored.acceptedAt })
+  assert.deepEqual(stored, { publicationId: 'agreement-1', version: 2, username: '蚂蚁_ant', acceptedAt: stored.acceptedAt })
   assert.equal(JSON.stringify(stored).includes('memory-only'), false)
   assert.deepEqual(paths, ['/api/public/agreements/privacy', '/api/public/registration-policy', '/api/public/agreements/privacy', '/api/app/auth/register', '/api/app/auth/login'])
 })
