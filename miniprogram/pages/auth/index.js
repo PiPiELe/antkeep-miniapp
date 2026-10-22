@@ -1,6 +1,8 @@
 const { request } = require('../../services/api')
 
 const USERNAME = /^[a-z0-9_\u3400-\u4DBF\u4E00-\u9FFF]{3,32}$/
+// A newer account page or attempt supersedes requests from older instances.
+let authSequence = 0
 
 Page({
   data: {
@@ -9,15 +11,29 @@ Page({
     privacy: null, privacyError: '', accepted: false, loading: true,
     submitting: false, error: ''
   },
-  onLoad() { this.loadPolicies() },
+  onLoad() {
+    this._unloaded = false
+    ++authSequence
+    this.loadPolicies()
+  },
+  onUnload() { this._unloaded = true },
   loadPolicies() {
     this.setData({ loading: true, policyError: '', privacyError: '', error: '' })
     const privacy = request('/api/public/agreements/privacy').then(value => {
+      if (this._unloaded) return
       if (!value || !value.id || !value.title || !value.content) throw new Error('隐私说明格式无效。')
       this.setData({ privacy: value, accepted: false })
-    }).catch(error => this.setData({ privacy: null, accepted: false, privacyError: error.code === 'PRIVACY_AGREEMENT_NOT_PUBLISHED' ? '隐私说明尚未发布，暂不能使用账号功能。' : error.message }))
-    const policy = request('/api/public/registration-policy').then(value => this.setData({ inviteRequired: value.inviteCodeRequired === true, policyReady: true })).catch(error => this.setData({ policyReady: false, policyError: error.message }))
-    return Promise.all([privacy, policy]).then(() => this.setData({ loading: false }))
+    }).catch(error => {
+      if (!this._unloaded) this.setData({ privacy: null, accepted: false, privacyError: error.code === 'PRIVACY_AGREEMENT_NOT_PUBLISHED' ? '隐私说明尚未发布，暂不能使用账号功能。' : error.message })
+    })
+    const policy = request('/api/public/registration-policy').then(value => {
+      if (!this._unloaded) this.setData({ inviteRequired: value.inviteCodeRequired === true, policyReady: true })
+    }).catch(error => {
+      if (!this._unloaded) this.setData({ policyReady: false, policyError: error.message })
+    })
+    return Promise.all([privacy, policy]).then(() => {
+      if (!this._unloaded) this.setData({ loading: false })
+    })
   },
   chooseLogin() { this.setData({ mode: 'login', error: '' }) },
   chooseRegister() { this.setData({ mode: 'register', error: '' }) },
@@ -36,9 +52,14 @@ Page({
     if (!privacy || !accepted) return this.setData({ error: '请先阅读并同意当前隐私说明。' })
     if (mode === 'register' && (!policyReady || (inviteRequired && !inviteCode))) return this.setData({ error: policyReady ? '请输入邀请码。' : '注册规则尚未加载，请重试。' })
 
+    const sequence = ++authSequence
+    const app = getApp()
+    let expectedSession = app.globalData.session
+    const current = () => !this._unloaded && sequence === authSequence && app.globalData.session === expectedSession
     this.setData({ submitting: true, error: '' })
     try {
       const latest = await request('/api/public/agreements/privacy')
+      if (!current()) return
       if (latest.id !== privacy.id) {
         this.setData({ privacy: latest, accepted: false, error: '隐私说明已更新，请重新阅读并同意。' })
         return
@@ -47,18 +68,21 @@ Page({
       wx.setStorageSync('privacyConsent', { publicationId: privacy.id, version: privacy.version, username, acceptedAt: new Date().toISOString() })
       if (mode === 'register') {
         await request('/api/app/auth/register', { method: 'POST', body: { username, password, ...(inviteCode ? { inviteCode } : {}) } })
+        if (!current()) return
       }
       const session = await request('/api/app/auth/login', { method: 'POST', body: { username, password } })
+      if (!current()) return
       if (!session || !session.token || !session.user || !session.user.username) throw new Error('登录响应格式无效。')
-      getApp().setSession(session)
+      app.setSession(session)
+      expectedSession = session
       this.setData({ password: '', inviteCode: '' })
       wx.showToast({ title: mode === 'register' ? '注册并登录成功' : '登录成功', icon: 'success' })
       if (getCurrentPages().length > 1) wx.navigateBack()
       else wx.switchTab({ url: '/pages/checkin/index' })
     } catch (error) {
-      this.setData({ error: error.message || '操作失败，请稍后重试。' })
+      if (current()) this.setData({ error: error.message || '操作失败，请稍后重试。' })
     } finally {
-      this.setData({ submitting: false })
+      if (current()) this.setData({ submitting: false })
     }
   }
 })
