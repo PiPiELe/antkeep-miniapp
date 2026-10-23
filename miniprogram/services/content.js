@@ -1,4 +1,10 @@
+const { request } = require('./api')
+
 function validText(value) { return typeof value === 'string' && value.trim() ? value : '' }
+
+function fetchPublicContent() {
+  return request('/api/public/content').then(normalizeContent)
+}
 
 function normalizeContent(payload) {
   if (!payload || !Number.isInteger(payload.version) || payload.version < 1) {
@@ -28,4 +34,4 @@ function findArticle(content, kind, id) {
   return list.find(item => item.id === id)
 }
 
-module.exports = { normalizeContent, findArticle }
+module.exports = { fetchPublicContent, normalizeContent, findArticle }

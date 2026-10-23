@@ -1,4 +1,5 @@
 const { request } = require('../../services/api')
+const { fetchPrivacyAgreement } = require('../../services/privacy')
 
 const USERNAME = /^[a-z0-9_\u3400-\u4DBF\u4E00-\u9FFF]{3,32}$/
 // A newer account page or attempt supersedes requests from older instances.
@@ -19,9 +20,8 @@ Page({
   onUnload() { this._unloaded = true },
   loadPolicies() {
     this.setData({ loading: true, policyError: '', privacyError: '', error: '' })
-    const privacy = request('/api/public/agreements/privacy').then(value => {
+    const privacy = fetchPrivacyAgreement().then(value => {
       if (this._unloaded) return
-      if (!value || !value.id || !value.title || !value.content) throw new Error('隐私说明格式无效。')
       this.setData({ privacy: value, accepted: false })
     }).catch(error => {
       if (!this._unloaded) this.setData({ privacy: null, accepted: false, privacyError: error.code === 'PRIVACY_AGREEMENT_NOT_PUBLISHED' ? '隐私说明尚未发布，暂不能使用账号功能。' : error.message })
@@ -58,7 +58,7 @@ Page({
     const current = () => !this._unloaded && sequence === authSequence && app.globalData.session === expectedSession
     this.setData({ submitting: true, error: '' })
     try {
-      const latest = await request('/api/public/agreements/privacy')
+      const latest = await fetchPrivacyAgreement()
       if (!current()) return
       if (latest.id !== privacy.id) {
         this.setData({ privacy: latest, accepted: false, error: '隐私说明已更新，请重新阅读并同意。' })

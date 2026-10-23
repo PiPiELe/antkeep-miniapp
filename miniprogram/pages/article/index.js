@@ -1,5 +1,4 @@
-const { request } = require('../../services/api')
-const { normalizeContent, findArticle } = require('../../services/content')
+const { fetchPublicContent, findArticle } = require('../../services/content')
 
 Page({
   data: { loading: true, error: '', article: null },
@@ -15,8 +14,7 @@ Page({
       return Promise.resolve()
     }
     this.setData({ loading: true, error: '' })
-    return request('/api/public/content').then(payload => {
-      const content = normalizeContent(payload)
+    return fetchPublicContent().then(content => {
       getApp().globalData.publicContent = content
       this.showArticle(content)
     }).catch(error => this.setData({ loading: false, error: error.message }))

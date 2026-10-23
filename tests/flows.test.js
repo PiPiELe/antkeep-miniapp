@@ -167,6 +167,56 @@ const agreement = { id: 'privacy-1', version: 1, title: '隐私说明', content:
 const account = name => ({ token: name, user: { id: name, username: name } })
 const summary = (days, checkedInToday = false) => ({ date: '2026-10-22', checkedInToday, totalDays: days, consecutiveDays: days })
 
+test('发现页和文章详情拒绝格式错误的公共内容，不写入共享缓存', async () => {
+  for (const name of ['home', 'article']) {
+    const app = { globalData: { publicContent: null } }
+    global.getApp = () => app
+    global.wx = { request(options) { options.success({ statusCode: 200, data: { version: 0 } }) } }
+    const page = newPage(name)
+    await (name === 'home' ? page.loadContent() : page.loadArticle())
+    assert.equal(page.data.loading, false)
+    assert.equal(page.data.error, '公共内容格式无效。')
+    assert.equal(app.globalData.publicContent, null)
+  }
+})
+
+test('账号页和隐私详情统一拒绝缺失或非文本的协议正文', async () => {
+  for (const name of ['auth', 'privacy']) {
+    for (const content of [undefined, '  ', {}]) {
+      global.wx = { request(options) {
+        options.success({ statusCode: 200, data: options.url.endsWith('/registration-policy')
+          ? { inviteCodeRequired: false } : { ...agreement, content } })
+      } }
+      const page = newPage(name)
+      await (name === 'auth' ? page.loadPolicies() : page.loadAgreement())
+      assert.equal(page.data.loading, false)
+      assert.equal(name === 'auth' ? page.data.privacyError : page.data.error, '隐私说明格式无效。')
+      assert.equal(name === 'auth' ? page.data.privacy : page.data.agreement, null)
+      if (name === 'auth') assert.equal(page.data.accepted, false)
+    }
+  }
+})
+
+test('提交前重取到同标识但正文无效的协议时，不记录同意或发送登录', async () => {
+  const app = newApp()
+  global.getApp = () => app
+  const requests = []
+  global.wx = {
+    request(options) {
+      requests.push(new URL(options.url).pathname)
+      options.success({ statusCode: 200, data: { ...agreement, content: null } })
+    },
+    setStorageSync() { assert.fail('无效协议不得记录同意') }
+  }
+  const page = newPage('auth')
+  page.setData({ username: 'ant_user', password: 'password123', privacy: agreement, accepted: true, loading: false })
+  await page.submit()
+  assert.deepEqual(requests, ['/api/public/agreements/privacy'])
+  assert.equal(app.globalData.session, null)
+  assert.equal(page.data.submitting, false)
+  assert.equal(page.data.error, '隐私说明格式无效。')
+})
+
 for (const stage of ['privacy', 'register', 'login']) {
   test(`离开账号页后不继续 ${stage} 阶段的认证流程`, async () => {
     const app = newApp()

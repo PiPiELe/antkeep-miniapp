@@ -1,5 +1,4 @@
-const { request } = require('../../services/api')
-const { normalizeContent } = require('../../services/content')
+const { fetchPublicContent } = require('../../services/content')
 
 Page({
   data: { loading: true, error: '', empty: false, content: null },
@@ -9,8 +8,7 @@ Page({
     const sequence = (this._loadSequence || 0) + 1
     this._loadSequence = sequence
     this.setData({ loading: true, error: '' })
-    return request('/api/public/content').then(payload => {
-      const content = normalizeContent(payload)
+    return fetchPublicContent().then(content => {
       if (sequence !== this._loadSequence) return
       getApp().globalData.publicContent = content
       this.setData({ content, empty: !content.articles.length && !content.steps.length, loading: false })
